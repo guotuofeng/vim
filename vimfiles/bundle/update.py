@@ -28,7 +28,10 @@ git_bundles = [
     "https://github.com/kshenoy/vim-signature",
     "https://github.com/tpope/vim-surround",
     "https://github.com/tpope/vim-unimpaired",
-    "https://github.com/othree/xml.vim"
+    "https://github.com/othree/xml.vim",
+    "https://github.com/vim-scripts/a.vim",
+    "https://github.com/vim-scripts/YankRing.vim",
+    "https://github.com/vim-scripts/LargeFile"
     # "https://github.com/mileszs/ack.vim",
     # "https://github.com/chrisbra/csv.vim",
     # "https://github.com/tpope/vim-fugitive",

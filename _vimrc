@@ -29,7 +29,7 @@
 set nocompatible "get out of VI's compatible mode
 
 " Use pathogen to easily modify the runtime path to include all plugins under the ~/.vim/bundle directory
-silent! call pathogen#infect('bundle/{}', 'bundle.local/{}')
+silent! call pathogen#infect()
 
 " encoding
 if has("multi_byte")
