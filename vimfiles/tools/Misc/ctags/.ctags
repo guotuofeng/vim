@@ -1,0 +1,39 @@
+--langdef=objc
+--langmap=objc:.m
+--regex-objc=/^[[:space:]]*[-+][[:space:]]*\([[:alpha:]]+[[:space:]]*\*?\)[[:space:]]*([[:alnum:]]+):[[:space:]]*\(/\1/m,method/
+--regex-objc=/^[[:space:]]*[-+][[:space:]]*\([[:alpha:]]+[[:space:]]*\*?\)[[:space:]]*([[:alnum:]]+)[[:space:]]*\{/\1/m,method/
+--regex-objc=/^[[:space:]]*[-+][[:space:]]*\([[:alpha:]]+[[:space:]]*\*?\)[[:space:]]*([[:alnum:]]+)[[:space:]]*\;/\1/m,method/
+--regex-objc=/^[[:space:]]*[-+][[:space:]]*\([[:alpha:]]+[[:space:]]*\*?\)[[:space:]]*([[:alnum:]]+)/\1/m,method/
+--regex-objc=/^[[:space:]]*\@property[[:space:]]+.*[[:space:]]+\*?(.*);$/\1/p,property/
+--regex-objc=/^[[:space:]]*\@implementation[[:space:]]+(.*)$/\1/c,class/
+--regex-objc=/^[[:space:]]*\@interface[[:space:]]+(.*)[[:space:]]+:.*\{/\1/i,interface/
+
+--langdef=objcpp
+--langmap=objcpp:.mm
+--regex-objcpp=/^[[:space:]]*[-+][[:space:]]*\([[:alpha:]]+[[:space:]]*\*?\)[[:space:]]*([[:alnum:]]+):[[:space:]]*\(/\1/m,method/
+--regex-objcpp=/^[[:space:]]*[-+][[:space:]]*\([[:alpha:]]+[[:space:]]*\*?\)[[:space:]]*([[:alnum:]]+)[[:space:]]*\{/\1/m,method/
+--regex-objcpp=/^[[:space:]]*[-+][[:space:]]*\([[:alpha:]]+[[:space:]]*\*?\)[[:space:]]*([[:alnum:]]+)[[:space:]]*\;/\1/m,method/
+--regex-objcpp=/^[[:space:]]*[-+][[:space:]]*\([[:alpha:]]+[[:space:]]*\*?\)[[:space:]]*([[:alnum:]]+)/\1/m,method/
+--regex-objcpp=/^[[:space:]]*\@property[[:space:]]+.*[[:space:]]+\*?(.*);$/\1/p,property/
+--regex-objcpp=/^[[:space:]]*\@implementation[[:space:]]+(.*)$/\1/c,class/
+--regex-objcpp=/^[[:space:]]*\@interface[[:space:]]+(.*)[[:space:]]+:.*\{/\1/i,interface/
+
+--langdef=js
+--langmap=js:.js
+--regex-JavaScript=/([A-Za-z0-9._$\(\)]+)[ \t]*[:=][ \t]*function[ \t]*\(/\1/m,method/
+--regex-JavaScript=/([A-Za-z0-9._$\#\(\)]+)[ \t]*[:][ \t]*([A-Za-z0-9._\-\#\'\"]+)[ \t]*/\1/p,property/
+--regex-JavaScript=/([A-Za-z0-9._$\#\(\)]+)[ \t]*[:][ \t]*([A-Za-z0-9\'\"._\-\#\(]+)[ \t]*\{/\1/p,property/
+--regex-JavaScript=/var ([A-Za-z0-9._$\#]+)[ \t]*[=][ \t]*([A-Za-z0-9._'"\$\#\[\{]+)[,|;]/\1/v,variable/
+--regex-JavaScript=/([A-Za-z0-9._$\#]+)[ \t]*[=][ \t]*([A-Za-z0-9._'"\$\#]+)extend\(/\1/c,class/
+
+--langdef=powershell
+--langmap=powershell:.ps1.psm1
+--regex-powershell=/^function[\t ]*([a-zA-Z0-9_-]+)/\1/d,definition/
+--regex-powershell=/^filter[\t ]*([a-zA-Z0-9_-]+)/\1/d,definition/
+
+--langdef=css
+--langmap=css:.css.scss
+--regex-css=/^\.([-_a-zA-Z0-9]+:?[_a-zA-Z0-9]+)?/\1/c/
+--regex-css=/^([A-Za-z0-9_]+[\t\r\n\v\f]?([>:.]?[\t\r\n\v\f]?[A-Za-z0-9_-]+)?(:{2}[\t\r\n\v\f]?([-][A-Za-z0-9_]+)*)?(\(\[[A-Za-z0-9_]+\]\))?)/\1/s/
+--regex-css=/^#(-?[A-Za-z0-9_]+:?[_a-zA-Z0-9]+)?/\1/i/
+--css-kinds=+cis'
