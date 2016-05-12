@@ -1,6 +1,6 @@
 " pathogen.vim - path option manipulation
 " Maintainer:   Tim Pope <http://tpo.pe/>
-" Version:      2.3
+" Version:      2.4
 
 " Install in ~/.vim/autoload (or ~\vimfiles\autoload).
 "
@@ -17,21 +17,21 @@ let g:loaded_pathogen = 1
 
 " Point of entry for basic default usage.  Give a relative path to invoke
 " pathogen#interpose() (defaults to "bundle/{}"), or an absolute path to invoke
-" pathogen#surround().  For backwards compatibility purposes, a full path that
-" does not end in {} or * is given to pathogen#runtime_prepend_subdirectories()
-" instead.
+" pathogen#surround().  Curly braces are expanded with pathogen#expand():
+" "bundle/{}" finds all subdirectories inside "bundle" inside all directories
+" in the runtime path.
 function! pathogen#infect(...) abort
   for path in a:0 ? filter(reverse(copy(a:000)), 'type(v:val) == type("")') : ['bundle/{}']
-    if path =~# '^[^\\/]\+$'
-      call s:warn('Change pathogen#infect('.string(path).') to pathogen#infect('.string(path.'/{}').')')
-      call pathogen#interpose(path . '/{}')
-    elseif path =~# '^[^\\/]\+[\\/]\%({}\|\*\)$'
-      call pathogen#interpose(path)
-    elseif path =~# '[\\/]\%({}\|\*\)$'
+    if path =~# '^\%({\=[$~\\/]\|{\=\w:[\\/]\).*[{}*]'
       call pathogen#surround(path)
-    else
+    elseif path =~# '^\%([$~\\/]\|\w:[\\/]\)'
       call s:warn('Change pathogen#infect('.string(path).') to pathogen#infect('.string(path.'/{}').')')
       call pathogen#surround(path . '/{}')
+    elseif path =~# '[{}*]'
+      call pathogen#interpose(path)
+    else
+      call s:warn('Change pathogen#infect('.string(path).') to pathogen#infect('.string(path.'/{}').')')
+      call pathogen#interpose(path . '/{}')
     endif
   endfor
   call pathogen#cycle_filetype()
@@ -44,6 +44,7 @@ endfunction
 " Split a path into a list.
 function! pathogen#split(path) abort
   if type(a:path) == type([]) | return a:path | endif
+  if empty(a:path) | return [] | endif
   let split = split(a:path,'\\\@<!\%(\\\\\)*\zs,')
   return map(split,'substitute(v:val,''\\\([\\,]\)'',''\1'',"g")')
 endfunction
@@ -89,38 +90,37 @@ function! pathogen#cycle_filetype() abort
 endfunction
 
 " Check if a bundle is disabled.  A bundle is considered disabled if its
-" basename or full name is included in the list g:pathogen_disabled.
+" basename or full name is included in the list g:pathogen_blacklist or the
+" comma delimited environment variable $VIMBLACKLIST.
 function! pathogen#is_disabled(path) abort
+  if a:path =~# '\~$'
+    return 1
+  endif
   let sep = pathogen#slash()
-  let blacklist = get(g:, 'pathogen_blacklist', get(g:, 'pathogen_disabled', []))
+  let blacklist =
+        \ get(g:, 'pathogen_blacklist', get(g:, 'pathogen_disabled', [])) +
+        \ pathogen#split($VIMBLACKLIST)
+  if !empty(blacklist)
+    call map(blacklist, 'substitute(v:val, "[\\/]$", "", "")')
+  endif
   return index(blacklist, fnamemodify(a:path, ':t')) != -1 || index(blacklist, a:path) != -1
-endfunction "}}}1
+endfunction
 
 " Prepend the given directory to the runtime path and append its corresponding
-" after directory.  If the directory is already included, move it to the
-" outermost position.  Wildcards are added as is.  Ending a path in /{} causes
-" all subdirectories to be added (except those in g:pathogen_disabled).
+" after directory.  Curly braces are expanded with pathogen#expand().
 function! pathogen#surround(path) abort
   let sep = pathogen#slash()
   let rtp = pathogen#split(&rtp)
-  if a:path =~# '[\\/]{}$'
-    let path = fnamemodify(a:path[0:-4], ':p:s?[\\/]\=$??')
-    let before = filter(pathogen#glob_directories(path.sep.'*'), '!pathogen#is_disabled(v:val)')
-    let after  = filter(reverse(pathogen#glob_directories(path.sep."*".sep."after")), '!pathogen#is_disabled(v:val[0:-7])')
-    call filter(rtp,'v:val[0:strlen(path)-1] !=# path')
-  else
-    let path = fnamemodify(a:path, ':p:s?[\\/]\=$??')
-    let before = [path]
-    let after = [path . sep . 'after']
-    call filter(rtp, 'index(before + after, v:val) == -1')
-  endif
+  let path = fnamemodify(a:path, ':s?[\\/]\=$??')
+  let before = filter(pathogen#expand(path), '!pathogen#is_disabled(v:val)')
+  let after = filter(reverse(pathogen#expand(path, sep.'after')), '!pathogen#is_disabled(v:val[0:-7])')
+  call filter(rtp, 'index(before + after, v:val) == -1')
   let &rtp = pathogen#join(before, rtp, after)
   return &rtp
 endfunction
 
 " For each directory in the runtime path, add a second entry with the given
-" argument appended.  If the argument ends in '/{}', add a separate entry for
-" each subdirectory.
+" argument appended.  Curly braces are expanded with pathogen#expand().
 function! pathogen#interpose(name) abort
   let sep = pathogen#slash()
   let name = a:name
@@ -131,17 +131,9 @@ function! pathogen#interpose(name) abort
   let list = []
   for dir in pathogen#split(&rtp)
     if dir =~# '\<after$'
-      if name =~# '{}$'
-        let list +=  filter(pathogen#glob_directories(substitute(dir,'after$',name[0:-3],'').'*'.sep.'after'), '!pathogen#is_disabled(v:val[0:-7])') + [dir]
-      else
-        let list += [dir, substitute(dir, 'after$', '', '') . name . sep . 'after']
-      endif
+      let list += reverse(filter(pathogen#expand(dir[0:-6].name, sep.'after'), '!pathogen#is_disabled(v:val[0:-7])')) + [dir]
     else
-      if name =~# '{}$'
-        let list +=  [dir] + filter(pathogen#glob_directories(dir.sep.name[0:-3].'*'), '!pathogen#is_disabled(v:val)')
-      else
-        let list += [dir . sep . name, dir]
-      endif
+      let list += [dir] + filter(pathogen#expand(dir.sep.name), '!pathogen#is_disabled(v:val)')
     endif
   endfor
   let &rtp = pathogen#join(pathogen#uniq(list))
@@ -174,6 +166,35 @@ endfunction
 
 " Section: Unofficial
 
+function! pathogen#is_absolute(path) abort
+  return a:path =~# (has('win32') ? '^\%([\\/]\|\w:\)[\\/]\|^[~$]' : '^[/~$]')
+endfunction
+
+" Given a string, returns all possible permutations of comma delimited braced
+" alternatives of that string.  pathogen#expand('/{a,b}/{c,d}') yields
+" ['/a/c', '/a/d', '/b/c', '/b/d'].  Empty braces are treated as a wildcard
+" and globbed.  Actual globs are preserved.
+function! pathogen#expand(pattern, ...) abort
+  let after = a:0 ? a:1 : ''
+  if a:pattern =~# '{[^{}]\+}'
+    let [pre, pat, post] = split(substitute(a:pattern, '\(.\{-\}\){\([^{}]\+\)}\(.*\)', "\\1\001\\2\001\\3", ''), "\001", 1)
+    let found = map(split(pat, ',', 1), 'pre.v:val.post')
+    let results = []
+    for pattern in found
+      call extend(results, pathogen#expand(pattern))
+    endfor
+  elseif a:pattern =~# '{}'
+    let pat = matchstr(a:pattern, '^.*{}[^*]*\%($\|[\\/]\)')
+    let post = a:pattern[strlen(pat) : -1]
+    let results = map(split(glob(substitute(pat, '{}', '*', 'g')), "\n"), 'v:val.post')
+  else
+    let results = [a:pattern]
+  endif
+  let vf = pathogen#slash() . 'vimfiles'
+  call map(results, 'v:val =~# "\\*" ? v:val.after : isdirectory(v:val.vf.after) ? v:val.vf.after : isdirectory(v:val.after) ? v:val.after : ""')
+  return filter(results, '!empty(v:val)')
+endfunction
+
 " \ on Windows unless shellslash is set, / everywhere else.
 function! pathogen#slash() abort
   return !exists("+shellslash") || &shellslash ? '/' : '\'
@@ -187,12 +208,12 @@ endfunction
 function! pathogen#glob(pattern) abort
   let files = split(glob(a:pattern),"\n")
   return map(files,'substitute(v:val,"[".pathogen#slash()."/]$","","")')
-endfunction "}}}1
+endfunction
 
 " Like pathogen#glob(), only limit the results to directories.
 function! pathogen#glob_directories(pattern) abort
   return filter(pathogen#glob(a:pattern),'isdirectory(v:val)')
-endfunction "}}}1
+endfunction
 
 " Remove duplicates from a list.
 function! pathogen#uniq(list) abort
@@ -224,7 +245,7 @@ function! pathogen#fnameescape(string) abort
 endfunction
 
 " Like findfile(), but hardcoded to use the runtimepath.
-function! pathogen#runtime_findfile(file,count) abort "{{{1
+function! pathogen#runtime_findfile(file,count) abort
   let rtp = pathogen#join(1,pathogen#split(&rtp))
   let file = findfile(a:file,rtp,a:count)
   if file ==# ''

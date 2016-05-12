@@ -338,9 +338,6 @@ func! DeleteTillSlash()
     return g:cmd_edited
 endfunc
 
-"map folding
-nnoremap <space> za
-
 " Navigation
 nnoremap j gj
 nnoremap k gk
