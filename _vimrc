@@ -41,12 +41,10 @@ if has("multi_byte")
 
   setglobal fileencoding=utf-8
   set fileencodings=ucs-bom,utf-8,cp936,gb18030,big5,euc-jp,euc-kr,latin1
-  " set fileencodings=ucs-bom,utf-8,chinese,gb2312,gbk,gb18030,latin1
 endif
 
 " language
 set langmenu=zh_CN.utf-8
-" can call source $VIMRUNTIME/menu.vim here
 language messages zh_CN.utf-8
 
 " Sets how many lines of history VIM has to remember, default 50
@@ -119,11 +117,11 @@ set nowrap
 
 " Tabs
 set smarttab
+set expandtab
 
 set tabstop=4
 set shiftwidth=4
 set softtabstop=4
-set expandtab
 
 " Indent
 set autoindent
@@ -156,9 +154,7 @@ endif
 
 " scroll
 set scrolloff=2
-" The default value is 1 so we turn it off
-" set scrolljump=1 
- 
+
 " Fold
 set foldcolumn=1
 
@@ -169,16 +165,15 @@ if has("gui_running")
   set guioptions-=e
   set guioptions-=m "Hide menu bar
 
+  " The following command must be placed before the colo command
+  autocmd ColorScheme * hi Search guifg=#fffffF guibg=#0099ff
   set background=dark
   try
-    ":let g:solarized_visibility="low"
-    " let g:solarized_contrast="low"
+    let g:solarized_contrast="high"
     let g:solarized_italic=0
     colo solarized
-    hi Underlined gui=underline
     " colo molokai
   catch
-    "let g:molokai_original=0
     "colo molokai
     colo desert
   endtry
@@ -210,20 +205,6 @@ endif
 " Highlight current line, default is off comment it
 " set nocursorline
 
-" Not mandetory settings
-if has("gui_running")
-  let &guicursor =
-        \ "n-v-c:block-Cursor/lCursor,"
-        \ . "ve:ver35-Cursor,"
-        \ . "o:hor25-Cursor,"
-        \ . "i:ver25-Cursor/lCursor,"
-        \ . "ci:ver25-Cursor/lCursor,"
-        \ . "r:hor20-Cursor/lCursor,"
-        \ . "cr:hor20-Cursor/lCursor,"
-        \ . "sm:block-Cursor,"
-        \ . "a:blinkwait750-blinkoff750-blinkon750"
-endif
-
 " standard file type
 if has("win32")
   set ffs=dos,unix,mac
@@ -251,9 +232,6 @@ set sessionoptions-=options
 set sessionoptions-=localoptions
 set sessionoptions-=blank
 
-" No sound on errors.
-" set noerrorbells
-" set novisualbell
 set t_vb=
 
 " Not clear the screen after exit
@@ -780,10 +758,6 @@ else
   let g:ctrlp_user_command = 'find %s -type f'
 endif
 
-" let g:ctrlp_extensions = ['funky']
-" nnoremap <Leader>fu :CtrlPFunky<Cr>
-" nnoremap <Leader>fU :execute 'CtrlPFunky ' . expand('<cword>')<Cr>
-
 "Alternate
 map <F12> :A<CR>
 let g:alternateExtensions_h = "c,cpp,cxx,cc,CC,m,mm"
@@ -803,6 +777,7 @@ if has("win32")
   let g:yankring_clipboard_monitor = 0
 endif
 let g:yankring_window_auto_close = 0
+let g:yankring_zap_keys = 'f t'
 
 "Space
 let g:space_no_character_movements = 1 " disable the movement in order to make snipMate work correctly
