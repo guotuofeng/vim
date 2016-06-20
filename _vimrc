@@ -144,7 +144,7 @@ if has("mac") || has("macunix")
   set gfn=Monaco:h12
   set shell=/bin/bash
 elseif has("win32")
-  set gfn=DejaVu_Sans_Mono:h10,Consolas:h10
+  set gfn=DejaVu_Sans_Mono:h11,Consolas:h10
   " set gfn=Consolas:h10
   set gfw=Yahei_Mono:h11
 elseif has ("unix")
@@ -166,7 +166,7 @@ if has("gui_running")
   set guioptions-=m "Hide menu bar
 
   " The following command must be placed before the colo command
-  autocmd ColorScheme * hi Search guifg=#fffffF guibg=#0099ff
+  " autocmd ColorScheme * hi Search guifg=#fffffF guibg=#0099ff
   set background=dark
   try
     let g:solarized_contrast="high"
