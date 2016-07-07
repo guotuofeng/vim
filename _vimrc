@@ -690,7 +690,8 @@ function! GenCTagsAll()
   " let cmd = cmd . "--langmap=c++:+.inl,c:+.fx.fxh.hlsl.vsh.psh.cg.shd,javascript:+.as "
   " let cmd = cmd . "."
   " silent! execute cmd
-  let cmd = "!ctags -f \"" . tagfile ."\" -R --c++-kinds=+p --fields=+iaS --extra=+q --language-force=c++ \"" . cwd . "\""
+  " let cmd = "!ctags -f \"" . tagfile ."\" -R --c++-kinds=+p --fields=+iaS --extra=+q --language-force=c++ \"" . cwd . "\""
+  let cmd = "!ctags -R ."
   execute cmd
 endfunction
 
