@@ -48,7 +48,7 @@ if __name__ == '__main__':
         dir = m.group(0)
         if os.path.exists(dir):
             cmd = 'cd %s&&git pull&&cd ..' % (dir)
-            print cmd
+            print(cmd)
             # os.system(cmd)
             # subprocess.Popen(cmd, shell=True).wait()
             subprocess.call(cmd, shell=True)
