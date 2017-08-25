@@ -258,7 +258,9 @@ if has("win32")
   unmap <C-Y>
   nunmap <C-a>
 
-  unmap <C-F>
+  if v:version >= 800
+    unmap <C-F>
+  endif
 endif
 "}
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
