@@ -551,28 +551,6 @@ let g:netrw_browse_split=4
 let g:netrw_liststyle=3
 let g:netrw_winsize=20
 
-"function! ToggleVExplorer()
-"  if exists("t:expl_buf_num")
-"      let expl_win_num = bufwinnr(t:expl_buf_num)
-"      if expl_win_num != -1
-"          let cur_win_nr = winnr()
-"          exec expl_win_num . 'wincmd w'
-"          close
-"          exec cur_win_nr . 'wincmd w'
-"          unlet t:expl_buf_num
-"      else
-"          unlet t:expl_buf_num
-"      endif
-"  else
-"      exec '1wincmd w'
-"      Vexplore
-"      let t:expl_buf_num = bufnr("%")
-"  endif
-"endfunction
-
-" Toggle Vexplore with Ctrl-E
-"map <silent> <C-E> :call ToggleVExplorer()<CR>
-
 "NERDTree
 "let g:NERDTreeWinPos = "right"
 let g:NERDTreeShowBookmarks=1
@@ -741,16 +719,14 @@ function! LoadCscope()
 endfunction
 au BufEnter /* call LoadCscope()
 
-"SuperTab
-" The following two lines are to reverse the TAB selection order
-let g:SuperTabDefaultCompletionType = "context"
-" let g:SuperTabContextDefaultCompletionType = "<c-n>"
+""SuperTab
+"" The following two lines are to reverse the TAB selection order
+"let g:SuperTabDefaultCompletionType = "context"
 
-" The following setting will cause vim deadlock
-"let g:SuperTabLongestHighlight=1
-
-let g:SuperTabLongestEnhanced=1
-"let g:SuperTabCrMapping=0
+"" The following setting will cause vim deadlock
+""let g:SuperTabLongestHighlight=1
+"
+"let g:SuperTabLongestEnhanced=1
 
 " CtrlP
 nnoremap <leader>ff :CtrlP<CR>
@@ -816,7 +792,7 @@ let g:tcomment_types={
 " airline
 let g:airline#extensions#branch#enabled = 0
 
-" neocomplete
+"neocomplete
 if has("lua")
   let g:neocomplete#enable_at_startup = 1
   " Use smartcase.

@@ -12,7 +12,7 @@ git_bundles = [
     "https://github.com/Shougo/neocomplete.vim",
     "https://github.com/scrooloose/nerdtree",
     "https://github.com/klen/python-mode",
-    "https://github.com/ervandew/supertab",
+    # "https://github.com/ervandew/supertab",
     "https://github.com/majutsushi/tagbar",
     "https://github.com/tomtom/tcomment_vim",
     "https://github.com/bling/vim-airline",
@@ -24,6 +24,9 @@ git_bundles = [
     "https://github.com/PProvost/vim-ps1",
     "https://github.com/kshenoy/vim-signature",
     "https://github.com/tpope/vim-surround",
+    "https://github.com/junegunn/fzf.vim",
+    "https://github.com/junegunn/fzf",
+
     # "https://github.com/tpope/vim-unimpaired",
     "https://github.com/othree/xml.vim",
     "https://github.com/vim-scripts/a.vim",
