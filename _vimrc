@@ -174,7 +174,6 @@ if has("gui_running")
     colo solarized
     " colo molokai
   catch
-    "colo molokai
     colo desert
   endtry
   if has("win32")
@@ -201,6 +200,8 @@ else
     colo molokai
   endif
 endif
+
+set grepprg=rg\ --vimgrep
 
 " Highlight current line, default is off comment it
 " set nocursorline
@@ -400,12 +401,6 @@ map <silent> <leader><cr> :noh<cr>
 "Pressing ,ss will toggle and untoggle spell checking
 map <leader>ss :setlocal spell!<cr>
 
-"Shortcuts using <leader>
-" map <leader>sn ]s
-" map <leader>sp [s
-" map <leader>sa zg
-" map <leader>s? z=
-
 "Remove the Windows ^M
 noremap <Leader>rm mmHmt:%s/<C-Q><cr>//ge<cr>'tzt'm
 
@@ -546,11 +541,6 @@ let g:bufExplorerShowRelativePath=1
 let g:bufExplorerSortBy = "name"
 let g:bufExplorerShowNoName=1
 
-"netrw
-let g:netrw_browse_split=4
-let g:netrw_liststyle=3
-let g:netrw_winsize=20
-
 "NERDTree
 "let g:NERDTreeWinPos = "right"
 let g:NERDTreeShowBookmarks=1
@@ -573,91 +563,6 @@ map <leader>t :TagbarToggle<cr>
 
 " tagbar settings for language
 let g:tagbar_type_ps1 = { 'ctagstype' : 'powershell', 'kinds' : [ 'd:definition', ], 'sort' : 0 }
-
-" Taglist language extenstion for objc
-" let tlist_objc_settings = 'objc;i:interface;c:class;m:method;p:property'
-
-"Taglist extension for objcpp
-" let tlist_objcpp_settings = 'objcpp;i:interface;c:class;m:method;p:property'
-
-" Tagbar language extenstion for objc
-let g:tagbar_type_objc = {
-    \ 'ctagstype' : 'objc',
-    \ 'kinds'     : [
-        \ 'i:interface',
-        \ 'I:implementation',
-        \ 'p:Protocol',
-        \ 'm:Object_method',
-        \ 'c:Class_method',
-        \ 'v:Global_variable',
-        \ 'F:Object field',
-        \ 'f:function',
-        \ 'p:property',
-        \ 't:type_alias',
-        \ 's:type_structure',
-        \ 'e:enumeration',
-        \ 'M:preprocessor_macro',
-    \ ],
-    \ 'sro'        : ' ',
-    \ 'kind2scope' : {
-        \ 'i' : 'interface',
-        \ 'I' : 'implementation',
-        \ 'p' : 'Protocol',
-        \ 's' : 'type_structure',
-        \ 'e' : 'enumeration'
-    \ },
-    \ 'scope2kind' : {
-        \ 'interface'      : 'i',
-        \ 'implementation' : 'I',
-        \ 'Protocol'       : 'p',
-        \ 'type_structure' : 's',
-        \ 'enumeration'    : 'e'
-    \ }
-\ }
-
-" Tagbar extension for objcpp
-let g:tagbar_type_objcpp = {
-    \ 'ctagstype' : 'objcpp',
-    \ 'kinds'     : [
-        \ 'i:interface',
-        \ 'I:implementation',
-        \ 'p:Protocol',
-        \ 'm:Object_method',
-        \ 'c:Class_method',
-        \ 'v:Global_variable',
-        \ 'F:Object field',
-        \ 'f:function',
-        \ 'p:property',
-        \ 't:type_alias',
-        \ 's:type_structure',
-        \ 'e:enumeration',
-        \ 'M:preprocessor_macro',
-    \ ],
-    \ 'sro'        : ' ',
-    \ 'kind2scope' : {
-        \ 'i' : 'interface',
-        \ 'I' : 'implementation',
-        \ 'p' : 'Protocol',
-        \ 's' : 'type_structure',
-        \ 'e' : 'enumeration'
-    \ },
-    \ 'scope2kind' : {
-        \ 'interface'      : 'i',
-        \ 'implementation' : 'I',
-        \ 'Protocol'       : 'p',
-        \ 'type_structure' : 's',
-        \ 'enumeration'    : 'e'
-    \ }
-\ }
-
-let g:tagbar_type_css = {
-\ 'ctagstype' : 'Css',
-    \ 'kinds'     : [
-        \ 'c:classes',
-        \ 's:selectors',
-        \ 'i:identities'
-    \ ]
-\ }
 
 " gen ctags for all languages
 function! GenCTagsAll()
@@ -729,8 +634,10 @@ au BufEnter /* call LoadCscope()
 "let g:SuperTabLongestEnhanced=1
 
 " CtrlP
-nnoremap <leader>ff :CtrlP<CR>
-nnoremap <leader>fb :CtrlPBuffer<CR>
+" nnoremap <leader>ff :CtrlP<CR>
+nnoremap <leader>ff :FZF<CR>
+nnoremap <leader>fb :Buffers<CR>
+
 let g:ctrlp_working_path_mode = 0
 let g:ctrlp_match_window_reversed = 0
 if has("win32")
@@ -784,53 +691,12 @@ if has("win32")
   map <silent> <Leader>so :call SDdiffopened()<cr>
 endif
 
-" tcomment
-let g:tcomment_types={
-  \'java' : "// %s",
-  \}
-
 " airline
 let g:airline#extensions#branch#enabled = 0
 
 "neocomplete
 if has("lua")
   let g:neocomplete#enable_at_startup = 1
-  " Use smartcase.
-  " let g:neocomplete#enable_smart_case = 1
-
-  let g:neocomplete#sources#syntax#min_keyword_length = 3
-  let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
-
-  " Define keyword.
-  if !exists('g:neocomplete#keyword_patterns')
-    let g:neocomplete#keyword_patterns = {}
-  endif
-  let g:neocomplete#keyword_patterns['default'] = '\h\w*'
-
-  " Plugin key-mappings.
-  inoremap <expr><C-g>     neocomplete#undo_completion()
-  inoremap <expr><C-l>     neocomplete#complete_common_string()
-
-  " <CR>: close popup and save indent.
-  inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-  function! s:my_cr_function()
-    return neocomplete#close_popup() . "\<CR>"
-  endfunction
-
-  " <C-h>, <BS>: close popup and delete backword char.
-  inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
-  inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-
-  " Enable heavy omni completion.
-  if !exists('g:neocomplete#sources#omni#input_patterns')
-    let g:neocomplete#sources#omni#input_patterns = {}
-  endif
-
-  let g:neocomplete#enable_fuzzy_completion = 0
-
-  " For perlomni.vim setting.
-  " https://github.com/c9s/perlomni.vim
-  let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
 endif
 
 "}
