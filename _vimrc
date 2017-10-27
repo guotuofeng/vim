@@ -80,7 +80,6 @@ set whichwrap+=<,>,h,l
 " Ignore case when searching by default
 set ignorecase
 set smartcase
-"set infercase " Keep current case on autocompletion
 
 " Highlight search and display incremental matches
 set hlsearch
@@ -105,7 +104,6 @@ if has('title') && (has('gui_running') || &title)
   set titlestring=
   set titlestring+=%t\ " file name
   set titlestring+=%h%m%r%w " flag
-  "set titlestring+=\ -\ %{v:progname} " program name
   set titlestring+=\ -\ %{substitute(getcwd(),\ $HOME,\ '~',\ '')}  " working directory
 endif
 
@@ -145,7 +143,6 @@ if has("mac") || has("macunix")
   set shell=/bin/bash
 elseif has("win32")
   set gfn=DejaVu_Sans_Mono:h11,Consolas:h10
-  " set gfn=Consolas:h10
   set gfw=Yahei_Mono:h11
 elseif has ("unix")
   set gfn=Monospace\ 10
@@ -160,28 +157,21 @@ set foldcolumn=1
 
 if has("gui_running")
   set guioptions-=a
-  set guioptions+=b
+  " set guioptions+=b " the horizontal scrollbar
+  set guioptions-=r "Hide the right scrollbar
   set guioptions-=T
   set guioptions-=e
   set guioptions-=m "Hide menu bar
 
   " The following command must be placed before the colo command
-  " autocmd ColorScheme * hi Search guifg=#fffffF guibg=#0099ff
   set background=dark
   try
     let g:solarized_contrast="high"
     let g:solarized_italic=0
     colo solarized
-    " colo molokai
   catch
     colo desert
   endtry
-  if has("win32")
-    "start gvim maximized
-    if has("autocmd")
-      au GUIEnter * simalt ~x
-    endif
-  endif
 
   if has('mac')
     set transparency=15
@@ -192,8 +182,6 @@ if has("gui_running")
 else
   if &term=="win32"
     set t_Co=256
-    " set background=light
-    " colo moria
     colo solarized
   else
     set t_Co=256
@@ -448,7 +436,7 @@ cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 map <leader>ew :e %%
 map <leader>es :sp %%
 
-" cnoreabbrev json %!python -m json.tool
+cnoreabbrev json %!python -m json.tool
 " copied from http://stackoverflow.com/questions/15108622/how-to-yank-a-code-block-without-folded-content
 ":g/^/if line('.')==foldclosed('.') || foldclosed('.')==-1|y Z|endif<CR>
 nnoremap <leader>cf :g/^/if line('.')==foldclosed('.') <Bar><Bar> foldclosed('.')==-1<Bar>y Z<Bar>endif<CR>
@@ -567,13 +555,11 @@ let g:tagbar_type_ps1 = { 'ctagstype' : 'powershell', 'kinds' : [ 'd:definition'
 " gen ctags for all languages
 function! GenCTagsAll()
   "Command is:
-  " '!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q --languages=c,c++,c\\#,python,vim,html,lua,javascript,java --langmap=c++:+.inl,c:+.fx,c:+.fxh,c:+.hlsl,c:+.vsh,c:+.psh,c:+.cg,c:+.shd,javascript:+.as .'
   let cwd = getcwd()
   let tagfile = cwd . "\\tags"
-  let tagfile = "c:\\tags"
   " let cmd = "!ctags -f \"" . tagfile . "\" -R --c++-kinds=+p --fields=+iaS --extra=+q "
   " " The following line will generate tags only for the languages in the list
-  " "let cmd = cmd . "--languages=c,c++,c\\#,python,vim,html,lua,javascript,java "
+  " let cmd = cmd . "--languages=c,c++,c\\#,python,vim,html,lua,javascript,java "
   " let cmd = cmd . "--langmap=c++:+.inl,c:+.fx.fxh.hlsl.vsh.psh.cg.shd,javascript:+.as "
   " let cmd = cmd . "."
   " silent! execute cmd
@@ -647,7 +633,7 @@ else
 endif
 
 "Alternate
-map <F12> :A<CR>
+" map <F12> :A<CR>
 let g:alternateExtensions_h = "c,cpp,cxx,cc,CC,m,mm"
 let g:alternateExtensions_H="cpp,mm,c,m"
 let g:alternateExtensions_hpp="cpp,mm,c,m"
