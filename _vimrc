@@ -36,7 +36,7 @@ if has("multi_byte")
   set encoding=utf-8
 
   if &termencoding == ""
-    set termencoding=&encoding
+    set termencoding=utf-8
   endif
 
   setglobal fileencoding=utf-8
