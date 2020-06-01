@@ -248,7 +248,7 @@ if has("win32")
   nunmap <C-a>
 
   if v:version >= 800
-    unmap <C-F>
+    silent! unmap <C-F>
   endif
 endif
 "}
@@ -686,6 +686,8 @@ if has("lua")
 endif
 
 "}
+
+let g:pymode_python = 'python3'
 
 if filereadable(expand("~/_vimrc.local"))
   source ~/_vimrc.local
