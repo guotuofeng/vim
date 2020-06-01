@@ -180,13 +180,9 @@ if has("gui_running")
   " Disable acces to menu using alt key
   set winaltkeys=no
 else
-  if &term=="win32"
-    set t_Co=256
-    colo solarized
-  else
-    set t_Co=256
-    colo molokai
-  endif
+  set t_Co=256
+  let g:solarized_termtrans=1
+  colo solarized
 endif
 
 set grepprg=rg\ --vimgrep
